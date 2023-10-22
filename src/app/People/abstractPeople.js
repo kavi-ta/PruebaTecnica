@@ -1,3 +1,6 @@
+const getPlanetById = require("../service/planet");
+const { getWeightOnPlanet } = require("../swapiFunctions");
+
 class AbstractPeople {
 
     constructor(id) {
@@ -36,7 +39,12 @@ class AbstractPeople {
     }
 
     async getWeightOnPlanet(planetId){
-        return;
+        const planet = await getPlanetById(planetId);
+        if (!planet.gravity){
+            throw new Error(`${planet.name} Planet Gravity is no defined`);
+        }
+        return getWeightOnPlanet(this.mass, planet.gravity);
+        
     }
 }
 

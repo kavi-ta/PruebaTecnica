@@ -1,22 +1,36 @@
-const swapiGetPlanetById = require('../swapiFunctions/planet');
-const db = require('../db');
+// swapiFunction import
+const {swapiGetPlanetById} = require('../swapiFunctions/planet');
+// Planet class import
 const { Planet } = require("../../app/Planet");
+// db import
+const db = require('../db');
 
 const getPlanetById = async (id)=>{
-    let swPlanet = await db.swPlanet.findOne({where: {id: id}});
-    if (!swPlanet) {
-        const planet = await swapiGetPlanetById(id)
-        swPlanet = new Planet({...planet, id: id, gravity:parseFloat(planet.gravity.split(" ")[0])})
-        await db.swPlanet.create({
-            "id": id,
-            "name": swPlanet.name,
-            "gravity": swPlanet.gravity,
-        })
+    try{
+        // fetch swPlanet from db
+        let swPlanet = await db.swPlanet.findOne({where: {id: id}});
+        if (!swPlanet) {
+            // fetch swPlanet from swapi since it was not found in db
+            const planet = await swapiGetPlanetById(id)
+            // create swPlanet an object of Planet class
+            swPlanet = new Planet({...planet, id: id, gravity:parseFloat(planet.gravity.split(" ")[0])})
+            // store the swPlanet in db
+            await db.swPlanet.create({
+                "id": id,
+                "name": swPlanet.name,
+                "gravity": swPlanet.gravity,
+            })
+        }
+        else{
+            // create swPlanet an object of Planet class
+            swPlanet = new Planet(swPlanet);
+        }
+        return swPlanet;
     }
-    else{
-        swPlanet = new Planet(swPlanet);
+    catch (e){
+        throw e;
     }
-    return swPlanet;
+    
 }
 
 module.exports = getPlanetById;

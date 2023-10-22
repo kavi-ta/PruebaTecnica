@@ -1,6 +1,6 @@
 // service imports
-const swapiGetPeopleById = require("../../app/service/people")
-const swapiGetPlanetById = require("../../app/service/planet")
+const {getPeopleById, getWeightOnPlanet} = require("../../app/service/people")
+const getPlanetById = require("../../app/service/planet")
 
 const _isWookieeFormat = (req) => {
     if(req.query.format && req.query.format == 'wookiee'){
@@ -19,19 +19,43 @@ const applySwapiEndpoints = (server, app) => {
     });
 
     server.get('/hfswapi/getPeople/:id', async (req, res) => {
-        const {id} = req.params;
-        const swPerson = await swapiGetPeopleById(parseInt(id));
-        res.send(swPerson);
+        try{
+            const {id} = req.params;
+            const swPerson = await getPeopleById(parseInt(id));
+            res.send(swPerson);
+        }
+        catch (e){
+            return res.status(404).send({
+                message: e.message
+            });
+        }
+        
     });
 
     server.get('/hfswapi/getPlanet/:id', async (req, res) => {
-        const {id} = req.params;
-        const swPlanet = await swapiGetPlanetById(parseInt(id));
-        res.send(swPlanet);
+        try{
+            const {id} = req.params;
+            const swPlanet = await getPlanetById(parseInt(id));
+            res.send(swPlanet);
+        }
+        catch (e){
+            return res.status(404).send({
+                message: e.message
+            });
+        }
     });
 
     server.get('/hfswapi/getWeightOnPlanetRandom', async (req, res) => {
-        res.send({"message": "To be implemented"});
+        try{
+            const weight = await getWeightOnPlanet();
+            res.send({"weight": weight});
+        }
+        catch (e){
+            return res.status(400).send({
+                message: e.message
+            })
+        }
+        
     });
 
     server.get('/hfswapi/getLogs',async (req, res) => {
