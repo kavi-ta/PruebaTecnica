@@ -1,5 +1,5 @@
 const WookieePeople = require('./wookieePeople');
-const CommonPeople = require('./CommonPeople');
+const CommonPeople = require('./commonPeople');
 
 const peopleFactory = async (id, lang) => {
     let people = null;
@@ -12,4 +12,15 @@ const peopleFactory = async (id, lang) => {
     return people;
 }
 
-module.exports = { peopleFactory }
+const swPeopleFactoryWithData = async (data, lang) => {
+    let people = null;
+    if (lang == 'wookiee'){
+        people = new WookieePeople(id);
+    } else {
+        people = new CommonPeople(data);
+    }
+    await people.init();
+    return people;
+}
+
+module.exports = { peopleFactory, swPeopleFactoryWithData }
