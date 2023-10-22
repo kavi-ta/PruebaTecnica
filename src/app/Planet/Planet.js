@@ -1,10 +1,16 @@
+const swapiFunctions = require('../swapiFunctions');
 class Planet {
-    constructor(id){
-        throw new Error('To be implemented');
+    // constructor(id){
+    //     this.id = id;
+    // }
+
+    constructor(data){
+        this.id = data.id;
+        this.name = data.name;
+        this.gravity = data.gravity;
     }
 
     async init(){
-        throw new Error('To be implemented');
     }
 
     getName() {
@@ -15,3 +21,5 @@ class Planet {
         return this.gravity;
     }
 }
+
+module.exports = Planet;
