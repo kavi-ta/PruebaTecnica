@@ -24,12 +24,8 @@ const getPeopleById = async (id , lang=null)=>{
             // fetch the swPerson from swapi since it was not found in db
             const person = await swapiGetPeopleById(id);
             let homeworldPlanetId = person.homeworld.split("/")[5];
-            // find if homeworld planet is present in db
-            let homeworldPlanet = await db.swPlanet.findOne({where : {id: homeworldPlanetId}});
-            if (!homeworldPlanet) {
-                // fetch the homeworld planet from swapi since it was not found in db
-                homeworldPlanet = await getPlanetById(homeworldPlanetId);
-            }
+            // fetch the homeworldPlanet
+            homeworldPlanet = await getPlanetById(homeworldPlanetId);
             // create the swPerson object
             swPerson = await swPeopleFactoryWithData({...person, id: id, homeworld_name: homeworldPlanet.name, homeworld_id: `/planets/${homeworldPlanet.id}` } , lang=lang)
             // store swPerson in db
