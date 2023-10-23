@@ -5,7 +5,7 @@ const { Planet } = require("../../app/Planet");
 // db import
 const db = require('../db');
 
-const getPlanetById = async (id)=>{
+const getPlanetById = async (id, lang=null)=>{
     try{
         // fetch swPlanet from db
         let swPlanet = await db.swPlanet.findOne({where: {id: id}});
@@ -24,6 +24,9 @@ const getPlanetById = async (id)=>{
         else{
             // create swPlanet an object of Planet class
             swPlanet = new Planet(swPlanet);
+        }
+        if (lang == 'wookiee'){
+            swPlanet = await swPlanet.getWookieeData()
         }
         return swPlanet;
     }

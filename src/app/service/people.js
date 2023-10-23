@@ -16,7 +16,7 @@ const getRandomId = (min,max) =>{
 let maxPlanetCount;
 let maxPeopleCount;
 
-const getPeopleById = async (id)=>{
+const getPeopleById = async (id , lang=null)=>{
     try{
         // fetch the swPerson from db
         let swPerson = await db.swPeople.findOne({where: {id: id}});
@@ -31,20 +31,23 @@ const getPeopleById = async (id)=>{
                 homeworldPlanet = await getPlanetById(homeworldPlanetId);
             }
             // create the swPerson object
-            swPerson = await swPeopleFactoryWithData({...person, id: id, homeworld_name: homeworldPlanet.name, homeworld_id: `/planets/${homeworldPlanet.id}` })
+            swPerson = await swPeopleFactoryWithData({...person, id: id, homeworld_name: homeworldPlanet.name, homeworld_id: `/planets/${homeworldPlanet.id}` } , lang=lang)
             // store swPerson in db
             await db.swPeople.create({
                 "id": id,
                 "name": swPerson.name,
                 "height": swPerson.height,
                 "mass": swPerson.mass,
-                "homeworld_id": swPerson.homeworldId,
-                "homeworld_name": swPerson.homeworldName
+                "homeworld_id": swPerson.homeworld_id,
+                "homeworld_name": swPerson.homeworld_name
             })
         }
         else{
             // create the swPerson object
-            swPerson = await swPeopleFactoryWithData(swPerson);
+            swPerson = await swPeopleFactoryWithData(swPerson, lang = lang);
+        }
+        if (lang == 'wookiee'){
+            swPerson = await swPerson.getWookieeData()
         }
         return swPerson;
     }
@@ -72,6 +75,7 @@ const getWeightOnPlanet = async () => {
             randomPeopleId = getRandomId( 0, maxPeopleCount);
             randomPerson = await getPeopleById(randomPeopleId)
         }
+        console.log(randomPeopleId,"pep")
         let weight;
         // if the weight generated is null due to planet.gravity being null find another planet with a valid gravity;
         while (true) {
@@ -83,6 +87,7 @@ const getWeightOnPlanet = async () => {
                 randomPlanetId = getRandomId( 0, maxPlanetCount);
             }
         }
+        console.log(randomPlanetId,"planet")
         return weight;
     }
     catch (e){

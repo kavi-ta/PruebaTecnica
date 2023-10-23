@@ -12,7 +12,6 @@ const _isWookieeFormat = (req) => {
 
 const applySwapiEndpoints = (server, app) => {
 
-    const swGenericApi = 'https://swapi.dev/api'
     server.get('/hfswapi/test', async (req, res) => {
         const data = await app.swapiFunctions.genericRequest('https://swapi.dev/api/', 'GET', null, true);
         res.send(data);
@@ -20,8 +19,9 @@ const applySwapiEndpoints = (server, app) => {
 
     server.get('/hfswapi/getPeople/:id', async (req, res) => {
         try{
+            const lang = _isWookieeFormat(req) && 'wookiee';
             const {id} = req.params;
-            const swPerson = await getPeopleById(parseInt(id));
+            const swPerson = await getPeopleById(parseInt(id) , lang);
             res.send(swPerson);
         }
         catch (e){
@@ -34,8 +34,9 @@ const applySwapiEndpoints = (server, app) => {
 
     server.get('/hfswapi/getPlanet/:id', async (req, res) => {
         try{
+            const lang = _isWookieeFormat(req) && 'wookiee';
             const {id} = req.params;
-            const swPlanet = await getPlanetById(parseInt(id));
+            const swPlanet = await getPlanetById(parseInt(id) , lang);
             res.send(swPlanet);
         }
         catch (e){
@@ -48,7 +49,7 @@ const applySwapiEndpoints = (server, app) => {
     server.get('/hfswapi/getWeightOnPlanetRandom', async (req, res) => {
         try{
             const weight = await getWeightOnPlanet();
-            res.send({"weight": weight});
+            res.send({"weight":weight});
         }
         catch (e){
             return res.status(400).send({

@@ -15,7 +15,7 @@ const peopleFactory = async (id, lang) => {
 const swPeopleFactoryWithData = async (data, lang) => {
     let people = null;
     if (lang == 'wookiee'){
-        people = new WookieePeople(id);
+        people = new WookieePeople(data);
     } else {
         people = new CommonPeople(data);
     }
