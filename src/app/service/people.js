@@ -75,7 +75,6 @@ const getWeightOnPlanet = async () => {
             randomPeopleId = getRandomId( 0, maxPeopleCount);
             randomPerson = await getPeopleById(randomPeopleId)
         }
-        console.log(randomPeopleId,"pep")
         let weight;
         // if the weight generated is null due to planet.gravity being null find another planet with a valid gravity;
         while (true) {
@@ -84,10 +83,15 @@ const getWeightOnPlanet = async () => {
                 break;
             }
             catch (e){
-                randomPlanetId = getRandomId( 0, maxPlanetCount);
+                if(e instanceof TypeError){
+                    randomPlanetId = getRandomId( 0, maxPlanetCount);
+                }
+                else{
+                    throw (e)
+                }
+                
             }
         }
-        console.log(randomPlanetId,"planet")
         return weight;
     }
     catch (e){

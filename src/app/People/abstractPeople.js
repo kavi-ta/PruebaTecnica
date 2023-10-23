@@ -41,7 +41,12 @@ class AbstractPeople {
     async getWeightOnPlanet(planetId){
         const planet = await getPlanetById(planetId);
         if (!planet.gravity){
-            throw new Error(`${planet.name} Planet Gravity is no defined`);
+            // throw a typeError to indicate the gravity is null
+            throw new TypeError(`${planet.name} Planet Gravity is not defined`);
+        }
+        if (planet.name === this.homeworld_name){
+            // throws error if the random planet is same as the homeworld planet
+            throw new Error("Planet random is same as the homeworld planet")
         }
         return getWeightOnPlanet(this.mass, planet.gravity);
         
